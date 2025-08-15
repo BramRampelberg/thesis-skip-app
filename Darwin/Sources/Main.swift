@@ -2,7 +2,7 @@ import SwiftUI
 import ThesisSkipApp
 
 private typealias AppRootView = ThesisSkipAppRootView
-private typealias AppDelegate = ThesisSkipAppAppDelegate
+private typealias AppDelegate = ThesisSkipAppDelegate
 
 /// The entry point to the app simply loads the App implementation from SPM module.
 @main struct AppMain: App {
@@ -39,7 +39,7 @@ typealias AppType = NSApplication
 #endif
 
 class AppMainDelegate: NSObject, AppMainDelegateBase {
-    let application = AppType.shared
+    @MainActor let application = AppType.shared
 
     #if canImport(UIKit)
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {

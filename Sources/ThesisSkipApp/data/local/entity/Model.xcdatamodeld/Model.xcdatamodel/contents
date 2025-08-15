@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="NotificationEntity" representedClassName="NotificationEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isRead" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="message" attributeType="String" defaultValueString=""/>
+        <attribute name="severity" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="ReservationEntity" representedClassName="ReservationEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="boatId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="boatPersonalName" attributeType="String" defaultValueString=""/>
+        <attribute name="date" attributeType="Date" defaultDateTimeInterval="757532100" usesScalarValueType="NO"/>
+        <attribute name="end" attributeType="Date" defaultDateTimeInterval="757532040" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isRemoved" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="start" attributeType="Date" defaultDateTimeInterval="757532040" usesScalarValueType="NO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+</model>

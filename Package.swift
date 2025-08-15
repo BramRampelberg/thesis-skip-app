@@ -11,11 +11,13 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://source.skip.tools/skip.git", from: "1.6.13"),
-        .package(url: "https://source.skip.tools/skip-ui.git", from: "1.0.0")
+        .package(url: "https://source.skip.tools/skip-ui.git", from: "1.0.0"),
+        .package(url: "https://github.com/auth0/Auth0.swift", from: "2.10.0")
     ],
     targets: [
         .target(name: "ThesisSkipApp", dependencies: [
-            .product(name: "SkipUI", package: "skip-ui")
+            .product(name: "SkipUI", package: "skip-ui"),
+            .product(name: "Auth0", package: "Auth0.swift")
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "ThesisSkipAppTests", dependencies: [
             "ThesisSkipApp",

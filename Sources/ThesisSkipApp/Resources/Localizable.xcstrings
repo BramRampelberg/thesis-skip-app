@@ -1,8 +1,19 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ - %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ - %2$@"
+          }
+        }
+      }
+    },
     "%lld Items" : {
       "comment" : "Header title for a list that contains the number of items",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -30,8 +41,12 @@
         }
       }
     },
+    "Acceptee Info" : {
+
+    },
     "Add" : {
       "comment" : "Button in items list that will cause a new item to be added",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -59,8 +74,12 @@
         }
       }
     },
+    "Address" : {
+
+    },
     "Appearance" : {
       "comment" : "Settings select label for the interface style of the controls (light, dark, or default)",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -88,8 +107,15 @@
         }
       }
     },
+    "Boat" : {
+
+    },
+    "Boat: %@" : {
+
+    },
     "Cancel" : {
       "comment" : "Button title indicating that the operation should be cancelled",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -117,8 +143,15 @@
         }
       }
     },
+    "Cancel Reservation" : {
+
+    },
+    "Canceled" : {
+
+    },
     "Dark" : {
       "comment" : "Menu item indicating that the appearance should be in dark mode",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -175,8 +208,15 @@
         }
       }
     },
+    "Date: %@" : {
+
+    },
+    "Email" : {
+
+    },
     "Favorite" : {
       "comment" : "Item editor title label for marking the item as a favorite",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -204,8 +244,12 @@
         }
       }
     },
+    "First View" : {
+
+    },
     "Hello [%@](https://skip.tools)!" : {
       "comment" : "Welcome tab contents",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -235,6 +279,7 @@
     },
     "Home" : {
       "comment" : "Tab bar item title for the Home tab",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -264,6 +309,7 @@
     },
     "Light" : {
       "comment" : "Menu item indicating that the appearance should be in light mode",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -290,6 +336,15 @@
           }
         }
       }
+    },
+    "Log out" : {
+
+    },
+    "Login" : {
+
+    },
+    "Mentor" : {
+
     },
     "Name" : {
       "comment" : "Placeholder title for the Name field in a form",
@@ -320,8 +375,12 @@
         }
       }
     },
+    "No pickup information available" : {
+
+    },
     "Notes" : {
       "comment" : "Item editor form label for the Notes field",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -349,8 +408,15 @@
         }
       }
     },
+    "Password" : {
+
+    },
+    "Past" : {
+
+    },
     "Powered by [Skip](https://skip.tools)" : {
       "comment" : "Link markdown text for the Powered by… label",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -378,8 +444,18 @@
         }
       }
     },
+    "Profile" : {
+
+    },
+    "Reservation Details" : {
+
+    },
+    "Reservations" : {
+
+    },
     "Save" : {
       "comment" : "Button title indicating that the current contents should be saved",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -407,8 +483,12 @@
         }
       }
     },
+    "Second View" : {
+
+    },
     "Settings" : {
       "comment" : "Tab bar item title for the Settings tab",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -438,6 +518,7 @@
     },
     "System" : {
       "comment" : "Menu item indicating that the appearance should be in the default system mode",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -465,8 +546,12 @@
         }
       }
     },
+    "Time" : {
+
+    },
     "Title" : {
       "comment" : "Label for the item editor form indicating the title of the item",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -494,8 +579,18 @@
         }
       }
     },
+    "Type" : {
+
+    },
+    "Type:" : {
+
+    },
+    "Upcoming" : {
+
+    },
     "Version %@ (%@)" : {
       "comment" : "Settings label showing the current version of the app",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -531,6 +626,7 @@
     },
     "Welcome" : {
       "comment" : "Tab bar item title for the Welcome tab",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

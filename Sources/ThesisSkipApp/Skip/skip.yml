@@ -5,3 +5,7 @@ skip:
 
 build:
   contents:
+    - block: 'dependencies'
+      contents:
+        - 'implementation(com.auth0.android:auth0)'
+        - 'implementation(org.jetbrains.kotlinx:kotlinx-coroutines-android)'
