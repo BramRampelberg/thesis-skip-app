@@ -36,6 +36,15 @@ android {
         // applicationId = PRODUCT_BUNDLE_IDENTIFIER
         // versionCode = CURRENT_PROJECT_VERSION
         // versionName = MARKETING_VERSION
+        addManifestPlaceholders(
+            mapOf(
+                "baseUrlPlaceholder" to "http://10.0.2.2:5000",
+                "auth0Domain" to "rise-gent2.eu.auth0.com",
+                "auth0ClientId" to "8vJtbXg2FptHGmKrpFl1tZwhiXOJZ57l",
+                "auth0Audience" to "https://api.buut.be",
+                "auth0Scheme" to "password"
+            )
+        )
     }
 
     buildFeatures {

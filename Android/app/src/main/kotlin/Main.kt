@@ -23,7 +23,7 @@ import androidx.core.app.ActivityCompat
 internal val logger: SkipLogger = SkipLogger(subsystem = "thesis.skip.app", category = "ThesisSkipApp")
 
 private typealias AppRootView = ThesisSkipAppRootView
-private typealias AppDelegate = ThesisSkipAppAppDelegate
+private typealias AppDelegate = ThesisSkipAppDelegate
 
 /// AndroidAppMain is the `android.app.Application` entry point, and must match `application android:name` in the AndroidMainfest.xml file.
 open class AndroidAppMain: Application {

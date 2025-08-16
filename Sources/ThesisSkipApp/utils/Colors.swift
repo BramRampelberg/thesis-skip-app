@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SwiftUICore
+import SwiftUI
 
 struct Colors {
     static let primary: Color = Color.from(hex: "FF42C4BE")

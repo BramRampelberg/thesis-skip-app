@@ -9,33 +9,33 @@
 import Foundation
 
 enum APIError: Error {
-    case badRequest(message: String? = nil)
-    case unauthorized(message: String? = nil)
-    case forbidden(message: String? = nil)
-    case notFound(message: String? = nil)
-    case conflict(message: String? = nil)
-    case internalServerError(message: String? = nil)
-    case serviceUnavailable(message: String? = nil)
-    case custom(statusCode: Int, message: String? = nil)
+    case badRequest(errorMessage: String? = nil)
+    case unauthorized(errorMessage: String? = nil)
+    case forbidden(errorMessage: String? = nil)
+    case notFound(errorMessage: String? = nil)
+    case conflict(errorMessage: String? = nil)
+    case internalServerError(errorMessage: String? = nil)
+    case serviceUnavailable(errorMessage: String? = nil)
+    case custom(errorStatusCode: Int, errorMessage: String? = nil)
     
-    init(statusCode: Int, message: String? = nil) {
-            switch statusCode {
+    init(errorStatusCode: Int, errorMessage: String? = nil) {
+            switch errorStatusCode {
             case 400:
-                self = .badRequest(message: message)
+                self = .badRequest(errorMessage: errorMessage)
             case 401:
-                self = .unauthorized(message: message)
+                self = .unauthorized(errorMessage: errorMessage)
             case 403:
-                self = .forbidden(message: message)
+                self = .forbidden(errorMessage: errorMessage)
             case 404:
-                self = .notFound(message: message)
+                self = .notFound(errorMessage: errorMessage)
             case 409:
-                self = .conflict(message: message)
+                self = .conflict(errorMessage: errorMessage)
             case 500:
-                self = .internalServerError(message: message)
+                self = .internalServerError(errorMessage: errorMessage)
             case 503:
-                self = .serviceUnavailable(message: message)
+                self = .serviceUnavailable(errorMessage: errorMessage)
             default:
-                self = .custom(statusCode: statusCode, message: message)
+                self = .custom(errorStatusCode: errorStatusCode, errorMessage: errorMessage)
             }
         }
     

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 class ProfileViewModel: ObservableObject {
     private let userRepo = UserRepository.shared

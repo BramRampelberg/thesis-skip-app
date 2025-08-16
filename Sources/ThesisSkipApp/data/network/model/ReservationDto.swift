@@ -40,7 +40,7 @@ struct ReservationDto: Codable, Sendable {
             guard let start = timeFormatter.date(from: startString),
                   let end = timeFormatter.date(from: endString),
                   let date = dateFormatter.date(from: dateString) else {
-                throw DecodingError.dataCorruptedError(forKey: .start, in: container, debugDescription: "Date format is incorrect")
+                throw DecodingError.dataCorruptedError(forKey: ReservationDto.CodingKeys.start, in: container, debugDescription: "Date format is incorrect")
             }
 
             self.start = start

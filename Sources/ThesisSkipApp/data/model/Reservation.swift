@@ -6,8 +6,12 @@
 //  Copyright © 2025 HOGENT. All rights reserved.
 //
 
-import Foundation
+#if !SKIP
 import CoreData
+#endif
+
+import Foundation
+
 
 struct Reservation {
     var start: Date
@@ -28,6 +32,7 @@ struct Reservation {
         self.isDeleted = isDeleted
     }
     
+#if !SKIP
     init(fromEntity entity: ReservationEntity) throws {
         if (entity.start == nil || entity.end == nil || entity.date == nil) {
             throw EntityConversionError(localizedDescription: "Failed to convert ReservationEnitity to Reservation: start, end or date was nil")
@@ -40,6 +45,7 @@ struct Reservation {
         id = Int(entity.id)
         isDeleted = entity.isRemoved
     }
+#endif
     
     init(fromDto dto: ReservationDto) {
         start = dto.start

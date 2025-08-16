@@ -14,13 +14,14 @@ import Foundation
     import com.auth0.android.authentication.storage.CredentialsManagerException
     import com.auth0.android.Auth0
     import com.auth0.android.result.Credentials
+    import com.auth0.android.callback.Callback
     import kotlinx.coroutines.withContext
     import kotlin.coroutines.resume
     import kotlin.coroutines.resumeWithException
-    import kotlin.coroutines.suspendCoroutine
     import kotlinx.coroutines.Dispatchers
     import kotlinx.coroutines.suspendCancellableCoroutine
     import kotlinx.coroutines.CancellableContinuation
+    import java.util.Date
 #else
     import Auth0
     import CoreData
@@ -48,15 +49,15 @@ final class Auth0Repository {
                     password: password
                 )
                 androidCredentialsManager.saveCredentials(credentials)
-                return Result.success(data: Void())
+                return Result.success(resultData: Void)
             } catch let error as AuthenticationException {
-                return .failureWithLog(
-                    cause: error.cause?.localizedDescription
-                        ?? error.localizedDescription,
-                    error: error
+                return failureWithLog(
+                    cause: error.message
+                        ?? "",
+                    error: error as Error?
                 )
             } catch {
-                return .failureWithLog(
+                return failureWithLog(
                     cause: error.localizedDescription,
                     error: error
                 )
@@ -68,7 +69,7 @@ final class Auth0Repository {
                     password: password
                 )
                 return credentialsManager.store(credentials: credentials)
-                    ? Result.success(data: Void())
+                ? Result.success(resultData: Void())
                     : .failureWithLog(cause: "Failed to store credentials")
             } catch let error as Auth0APIError {
                 return .failureWithLog(
@@ -102,38 +103,42 @@ final class Auth0Repository {
     }
 
     #if SKIP
-        private class GetCredentialsCallback: Callback {
+        private class GetCredentialsCallback: Callback<
+            Credentials, CredentialsManagerException
+        >
+        {
             // The continuation now needs to be generic over the Android Credentials type
             let continuation:
                 CancellableContinuation<
-                    com_auth0_android_result.Credentials, Error
+                    Credentials
                 >
 
             init(
                 continuation: CancellableContinuation<
-                    com_auth0_android_result.Credentials, Error
+                    Credentials
                 >
             ) {
                 self.continuation = continuation
             }
 
-            override func onSuccess(result: Any?) {
+            override func onSuccess(result: Credentials) {
                 let credentials =
-                    result as! com_auth0_android_result.Credentials
-                continuation.resume(returning: credentials)
+                    result as! Credentials
+                continuation.resume(value: credentials)
             }
 
-            override func onFailure(error: Any?) {
+            override func onFailure(error: CredentialsManagerException) {
                 let exception = error as! CredentialsManagerException
-                continuation.resume(throwing: exception)
+                continuation.resumeWithException(exception: exception)
             }
         }
     #endif
 
     func getCredentials() async throws -> AppCredentials {
         #if SKIP
-            let credentials = try await suspendCancellableCoroutine<Credentials> {
-                (continuation:CancellableContinuation) in
+            let credentials = try await suspendCancellableCoroutine<Credentials>
+            {
+                (continuation: CancellableContinuation<Credentials>) in
                 let callback = GetCredentialsCallback(
                     continuation: continuation
                 )
@@ -144,9 +149,9 @@ final class Auth0Repository {
                 tokenType: credentials.type,
                 idToken: credentials.idToken,
                 refreshToken: credentials.refreshToken,
-                expiresIn: credentials.expiresAt,
+                recoveryCode: credentials.recoveryCode,
                 scope: credentials.scope,
-                recoveryCode: credentials.recoveryCode
+                expiresIn: credentials.expiresAt
             )
         #else
             let credentials = try await credentialsManager.credentials()
@@ -159,7 +164,6 @@ final class Auth0Repository {
                 scope: credentials.scope,
                 recoveryCode: credentials.recoveryCode
             )
-
         #endif
     }
 

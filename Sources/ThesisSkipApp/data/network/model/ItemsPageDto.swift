@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct ItemsPageDto<T: Codable & Sendable>: Codable, Sendable {
-    let data: [T]
+struct ReservationsPageDto: Codable, Sendable {
+    let data: [ReservationDto]
     let nextId: Int?
     let previousId: Int?
     let isFirstPage: Bool

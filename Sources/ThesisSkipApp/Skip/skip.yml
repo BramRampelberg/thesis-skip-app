@@ -7,5 +7,5 @@ build:
   contents:
     - block: 'dependencies'
       contents:
-        - 'implementation(com.auth0.android:auth0)'
-        - 'implementation(org.jetbrains.kotlinx:kotlinx-coroutines-android)'
+        - 'implementation("com.auth0.android:auth0:3.2.0")'
+        - 'implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")'

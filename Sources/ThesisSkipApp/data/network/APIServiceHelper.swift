@@ -23,11 +23,10 @@ final class APIServiceHelper {
 
     private init() {}
 
-    func sendRequest<ReturnType: Decodable, BodyType: Encodable>(
+    @inline(__always) func sendRequest<ReturnType: Decodable>(
         to url: String,
         method: HTTPMethod,
         queryParams: [String: String]? = [:],
-        body: BodyType? = EmptyBody()
     ) async -> Result<ReturnType> {
         if var components = URLComponents(
             string: "\(baseUrl.absoluteString)/\(url)"
@@ -52,21 +51,18 @@ final class APIServiceHelper {
                 if result.isSuccess {
                     request = result.data!
                 } else {
-                    return .failureWithLog(
-                        cause: result.failureCause!,
-                        error: result.error
-                    )
-                }
-
-                if !(body is EmptyBody) {
-                    do {
-                        request.httpBody = try JSONEncoder().encode(body)
-                    } catch {
-                        return .failureWithLog(
-                            cause: error.localizedDescription,
-                            error: error
+                    #if SKIP
+                        return failureWithLog(
+                            cause: result.failureCause!,
+                            error: result.error
                         )
-                    }
+                    #else
+                        return .failureWithLog(
+                            cause: result.failureCause!,
+                            error: result.error
+                        )
+                    #endif
+
                 }
 
                 let session = URLSession.shared
@@ -74,10 +70,18 @@ final class APIServiceHelper {
                 do {
                     let (data, response) = try await session.data(for: request)
                     guard let response = response as? HTTPURLResponse else {
-                        return .failureWithLog(
-                            cause:
-                                "Unexpected error: could not process response."
-                        )
+                        #if SKIP
+                            return failureWithLog(
+                                cause:
+                                    "Unexpected error: could not process response."
+                            )
+                        #else
+                            return .failureWithLog(
+                                cause:
+                                    "Unexpected error: could not process response."
+                            )
+                        #endif
+
                     }
 
                     AppLogger.info(
@@ -95,34 +99,62 @@ final class APIServiceHelper {
                             reasonPhrase = jsonString
                         }
                         let error = APIError.init(
-                            statusCode: response.statusCode,
-                            message: reasonPhrase
+                            errorStatusCode: response.statusCode,
+                            errorMessage: reasonPhrase
                         )
-                        return .failureWithLog(
-                            cause: error.localizedDescription,
-                            error: APIError(statusCode: response.statusCode)
-                        )
+                        #if SKIP
+                            return failureWithLog(
+                                cause: error.localizedDescription,
+                                error: APIError(
+                                    errorStatusCode: response.statusCode
+                                )
+                            )
+                        #else
+                            return .failureWithLog(
+                                cause: error.localizedDescription,
+                                error: APIError(
+                                    errorStatusCode: response.statusCode
+                                )
+                            )
+                        #endif
+
                     }
                     if ReturnType.self == EmptyBody.self {
-                        return .success(data: EmptyBody() as! ReturnType)
+                        return .success(resultData: EmptyBody() as! ReturnType)
                     }
                     let returnValue = try JSONDecoder().decode(
                         ReturnType.self,
                         from: data
                     )
-                    return .success(data: returnValue)
+                    return .success(resultData: returnValue)
                 } catch {
-                    return .failureWithLog(
-                        cause: error.localizedDescription,
-                        error: error
-                    )
+                    #if SKIP
+                        return failureWithLog(
+                            cause: error.localizedDescription,
+                            error: error
+                        )
+                    #else
+                        return .failureWithLog(
+                            cause: error.localizedDescription,
+                            error: error
+                        )
+                    #endif
+
                 }
             }
         }
-        return .failureWithLog(
-            cause: "Could not parse url.",
-            error: URLError(.badURL)
-        )
+        #if SKIP
+            return failureWithLog(
+                cause: "Could not parse url.",
+                error: URLError(.badURL)
+            )
+        #else
+            return .failureWithLog(
+                cause: "Could not parse url.",
+                error: URLError(.badURL)
+            )
+        #endif
+
     }
 
     private func addAuthentication(to request: URLRequest) async -> Result<
@@ -138,15 +170,15 @@ final class APIServiceHelper {
                     "\(type) \(accessToken)",
                     forHTTPHeaderField: "Authorization"
                 )
-                return .success(data: request)
+                return .success(resultData: request)
             } catch let error as CredentialsManagerException {
-                return .failureWithLog(
-                    cause: error.cause?.localizedDescription
+                return failureWithLog(
+                    cause: error.message
                         ?? "Unexpected error while fetching the credentials.",
-                    error: error
+                    error: error as Error?
                 )
             } catch {
-                return .failureWithLog(
+                return failureWithLog(
                     cause: error.localizedDescription,
                     error: error
                 )
@@ -161,7 +193,7 @@ final class APIServiceHelper {
                     "\(type) \(accessToken)",
                     forHTTPHeaderField: "Authorization"
                 )
-                return .success(data: request)
+                return .success(resultData: request)
             } catch let error as CredentialsManagerError {
                 return .failureWithLog(
                     cause: error.cause?.localizedDescription

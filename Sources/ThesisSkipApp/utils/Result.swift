@@ -9,20 +9,15 @@
 import Foundation
 
 enum Result<T: Sendable>: Sendable {
-    case success(data: T)
-    case failure(cause: String, error: Error? = nil)
+    case success(resultData: T)
+    case failure(cause: String, failureError: Error? = nil)
 
     #if SKIP
         private init(failureAndroid cause: String, error: Error? = nil) {
             AppLogger.error(
                 "Failure created with cause: \(cause), error: \(error?.localizedDescription ?? "None")"
             )
-            self = .failure(cause: cause, error: error)
-        }
-
-        static func failureWithLog(cause: String, error: Error? = nil) -> Result
-        {
-            return Result(failure: cause, error: error)
+            self = .failure(cause: cause, failureError: error)
         }
     #else
         private init(
@@ -38,7 +33,7 @@ enum Result<T: Sendable>: Sendable {
                 function: function,
                 line: line
             )
-            self = .failure(cause: cause, error: error)
+            self = .failure(cause: cause, failureError: error)
         }
 
         static func failureWithLog(
@@ -90,3 +85,12 @@ enum Result<T: Sendable>: Sendable {
         }
     }
 }
+
+#if SKIP
+
+func failureWithLog<T: Sendable>(cause: String, error: Error? = nil) -> Result<T> {
+    AppLogger.error("Failure created with cause: \(cause), error: \(error?.localizedDescription ?? "None")")
+    return .failure(cause: cause, failureError: error)
+}
+
+#endif

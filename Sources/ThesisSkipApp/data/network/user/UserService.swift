@@ -14,11 +14,11 @@ final class UserService {
     
     private let serviceHelper = APIServiceHelper.shared
     
-    let logger = Logger()
+    let logger = Logger(subsystem: "be.hogent.ThesisSkipApp", category: "ThesisSkipApp")
     
     private init(){}
     
     func fetchUserDetails() async -> Result<UserDetailsDto> {
-        return await serviceHelper.sendRequest(to: "api/User/profile", method: .get)
+        return await serviceHelper.sendRequest(to: "api/User/profile", method: HTTPMethod.get)
     }
 }

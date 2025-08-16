@@ -28,7 +28,17 @@ final class AppConfiguration {
                         PackageManager.GET_META_DATA
                     )
                 let bundle = appInfo.metaData
-                self.baseUrl = try bundle?.getString("BASE_URL")
+                let baseUrlString = bundle?.getString("BASE_URL")
+
+                if let baseUrlString = baseUrlString,
+                    let url = URL(string: baseUrlString)
+                {
+                    self.baseUrl = url
+                } else {
+                    fatalError(
+                        "BASE_URL is missing or invalid in AndroidManifest.xml meta-data."
+                    )
+                }
             } catch (e:PackageManager.NameNotFoundException) {
                 fatalError(
                     "BASE_URL is missing or invalid in AndroidManifest.xml"

@@ -93,8 +93,7 @@ struct Navigation: View {
                 systemImage: "person.crop.circle.fill"
             )
         }
-        .listStyle(SidebarListStyle())
-        .frame(maxWidth: 225)
+        .frame(maxWidth: CGFloat(225))
     }
 
     struct SidebarButton: View {

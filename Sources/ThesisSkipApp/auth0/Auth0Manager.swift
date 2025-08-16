@@ -6,16 +6,18 @@
 //  Copyright © 2025 HOGENT. All rights reserved.
 //
 
+import Foundation
+
 #if SKIP
     import android.content.Context
     import com.auth0.android.Auth0
     import com.auth0.android.authentication.AuthenticationAPIClient
     import com.auth0.android.authentication.storage.SecureCredentialsManager
     import com.auth0.android.authentication.storage.SharedPreferencesStorage
+    import android.content.pm.PackageManager
 #else
     import Auth0
 #endif
-import Foundation
 
 final class Auth0Manager {
     nonisolated(unsafe) static let shared = Auth0Manager()
@@ -50,25 +52,47 @@ final class Auth0Manager {
     #endif
 
     private init() {
-        guard
-            let url = Bundle.module.url(
-                forResource: "Auth0",
-                withExtension: "plist"
-            ),
-            let auth0Dict = NSDictionary(contentsOf: url)
-                as? [String: Any],
-            let clientId = auth0Dict["ClientId"] as? String,
-            let domain = auth0Dict["Domain"] as? String,
-            let audience = auth0Dict["Audience"] as? String
-        else {
-            fatalError("Auth0.plist file is missing or invalid")
-        }
-
         #if SKIP
-            self.auth0 = Auth0.getInstance(clientId, domain)
+            let context = ProcessInfo.processInfo.androidContext
+            do {
+                let appInfo = context.packageManager
+                    .getApplicationInfo(
+                        context.packageName,
+                        PackageManager.GET_META_DATA
+                    )
+                let metaData = appInfo.metaData
+
+                guard let clientId = metaData?.getString("AUTH0_CLIENT_ID"),
+                    let domain = metaData?.getString("AUTH0_DOMAIN"),
+                    let audience = metaData?.getString("AUTH0_AUDIENCE")
+                else {
+                    fatalError(
+                        "Auth0 config is missing from AndroidManifest.xml meta-data. Check your skip.env file."
+                    )
+                }
+                self.auth0 = Auth0.getInstance(clientId, domain)
+                self.clientId = clientId
+                self.domain = domain
+                self.audience = audience
+            } catch {
+                fatalError(
+                    "Failed to read AndroidManifest.xml: \(error.localizedDescription)"
+                )
+            }
+
+        #else
+            guard let infoDict = Bundle.main.infoDictionary,
+                let clientId = infoDict["AUTH0_CLIENT_ID"] as? String,
+                let domain = infoDict["AUTH0_DOMAIN"] as? String,
+                let audience = infoDict["AUTH0_AUDIENCE"] as? String
+            else {
+                fatalError(
+                    "Auth0 config is missing or invalid in Info.plist. Check your skip.env file."
+                )
+            }
+            self.clientId = clientId
+            self.domain = domain
+            self.audience = audience
         #endif
-        self.clientId = clientId
-        self.domain = domain
-        self.audience = audience
     }
 }

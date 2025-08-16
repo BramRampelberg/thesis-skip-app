@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SwiftUICore
+import SwiftUI
 
 //Code from: https://stackoverflow.com/a/56874327
 extension Color {
@@ -17,16 +17,14 @@ extension Color {
             cleanHex = String(cleanHex.dropFirst())
         }
 
-        guard let intValue = Int64(cleanHex, radix: 16) else {
-            // If the string is not a valid hex color, return a default.
-            // Black is a good choice as it's obvious when something is wrong.
+        guard let intValue = parseHex(cleanHex) else {
             return .black
         }
 
-        let a: Int64
-        let r: Int64
-        let g: Int64
-        let b: Int64
+        var a: Int32 = 0
+        var r: Int32 = 0
+        var g: Int32 = 0
+        var b: Int32 = 0
         switch cleanHex.count {
         case 3:  // RGB (12-bit)
             (a, r, g, b) = (
@@ -54,4 +52,13 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+    
+    private static func parseHex(_ hex: String) -> Int32? {
+            #if SKIP
+            return hex.toIntOrNull(16)
+
+            #else
+            return Int32(hex, radix: 16)
+            #endif
+        }
 }

@@ -10,7 +10,7 @@ import Foundation
 import os
 
 final class AppLogger {
-    static private let logger = Logger()
+    static private let logger = Logger(subsystem: "be.hogent.ThesisSkipApp", category: "ThesisSkipApp")
     
     static private var timestamp: String {
         let dateFormatter = DateFormatter()
@@ -34,6 +34,18 @@ final class AppLogger {
     static func warning(_ message: Any){
         log(level: Level.warning, message: message)
     }
+    
+    static private func log(level: Level, message: Any){
+
+        let formattedMessage = "\(level) : [\(timestamp)] \(message)"
+        
+        switch level{
+        case .info: logger.info("\(formattedMessage)")
+        case .error: logger.error("\(formattedMessage)")
+        case .debug: logger.debug("\(formattedMessage)")
+        case .warning: logger.warning("\(formattedMessage)")
+        }
+    }
 #else
     static func info(_ message: Any, file: String = #file, function: String = #function, line: Int = #line){
         log(level: .info, message: message, file: file, function: function, line: line)
@@ -50,7 +62,6 @@ final class AppLogger {
     static func warning(_ message: Any, file: String = #file, function: String = #function, line: Int = #line){
         log(level: .warning, message: message, file: file, function: function, line: line)
     }
-#endif
     
     static private func log(level: Level, message: Any, file: String, function: String, line: Int){
         let fileName = (file as NSString).lastPathComponent
@@ -64,6 +75,7 @@ final class AppLogger {
         case .warning: logger.warning("\(formattedMessage)")
         }
     }
+#endif
     
     private enum Level {
         case info

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 class LoginViewModel: ObservableObject {
     private let auth0Repo = Auth0Repository.shared

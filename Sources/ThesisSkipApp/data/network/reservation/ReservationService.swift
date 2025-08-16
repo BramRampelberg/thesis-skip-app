@@ -14,10 +14,10 @@ final class ReservationService {
     
     private let serviceHelper = APIServiceHelper.shared
     
-    let logger = Logger()
+    let logger = Logger(subsystem: "be.hogent.ThesisSkipApp", category: "ThesisSkipApp")
     
-    func fetchReservations(isPast: Bool, isCanceled: Bool, cursor: Int?, pageSize: Int) async -> Result<ItemsPageDto<ReservationDto>> {
-        let queryParams =  [
+    func fetchReservations(isPast: Bool, isCanceled: Bool, cursor: Int?, pageSize: Int) async -> Result<ReservationsPageDto> {
+        let queryParams: [String:String] =  [
             "cursor": cursor != nil ? String(cursor!) : nil,
             "isNextPage": String(true),
             "getPast": String(isPast),
@@ -30,11 +30,11 @@ final class ReservationService {
     }
     
     func fetchReservationDetails(for reservation: Reservation) async -> Result<ReservationDetailsDto> {
-        return await serviceHelper.sendRequest(to: "api/Reservation/\(reservation.id)", method: .get)
+        return await serviceHelper.sendRequest(to: "api/Reservation/\(reservation.id)", method: HTTPMethod.get)
     }
     
     func cancelReservation(_ reservation: Reservation) async -> Result<EmptyBody> {
-        return await serviceHelper.sendRequest(to: "api/Reservation/cancel/\(reservation.id)", method: .patch)
+        return await serviceHelper.sendRequest(to: "api/Reservation/cancel/\(reservation.id)", method: HTTPMethod.patch)
     }
     
     private init(){}

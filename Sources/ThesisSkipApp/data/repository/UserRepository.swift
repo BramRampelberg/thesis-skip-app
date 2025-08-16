@@ -15,11 +15,21 @@ final class UserRepository {
 
     func getUser() async -> Result<User> {
         let result = await userService.fetchUserDetails()
-        return result.isSuccess
-            ? .success(data: User(fromDto: result.data!))
-            : .failureWithLog(
-                cause: "Failed to get user data.",
-                error: result.error
-            )
+        if result.isSuccess {
+            return .success(resultData: User(fromDto: result.data!))
+        } else {
+            #if SKIP
+                return failureWithLog(
+                    cause: "Failed to get user data.",
+                    error: result.error
+                )
+            #else
+                return .failureWithLog(
+                    cause: "Failed to get user data.",
+                    error: result.error
+                )
+            #endif
+        }
+
     }
 }

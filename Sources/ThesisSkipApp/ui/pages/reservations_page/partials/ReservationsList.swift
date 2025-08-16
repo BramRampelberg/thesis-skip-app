@@ -41,7 +41,7 @@ struct ReservationsList: View {
                 "Date",
                 content: { (reservation: Reservation) in
                     Text(
-                        "Date: \(reservation.date.formatted(Date.FormatStyle.dateTime.day().month().year()))"
+                        "Date: \(reservation.date.formatted(date: .numeric, time: .omitted))"
                     )
                 }
             )
@@ -50,7 +50,7 @@ struct ReservationsList: View {
                 "Time",
                 content: { (reservation: Reservation) in
                     Text(
-                        "\(reservation.start.formatted(Date.FormatStyle.dateTime.hour().minute())) - \(reservation.end.formatted(Date.FormatStyle.dateTime.hour().minute()))"
+                        "\(reservation.start.formatted(date: .omitted, time: .shortened)) - \(reservation.end.formatted(date: .omitted, time: .shortened))"
                     )
                 }
             )
