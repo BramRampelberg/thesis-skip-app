@@ -37,7 +37,7 @@ struct ProfilePage: View {
             loginViewModel.logout()
         }){
             HStack{
-                Image(systemName: "rectangle.portrait.and.arrow.right")
+                Image("rectangle.portrait.and.arrow.right", bundle: .module)
                 Text("Log out")
             }.frame(minWidth: 0, maxWidth: maxWidth)
         }

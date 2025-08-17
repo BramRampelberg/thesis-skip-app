@@ -24,7 +24,6 @@ import Foundation
     import java.util.Date
 #else
     import Auth0
-    import CoreData
 #endif
 
 final class Auth0Repository {
@@ -35,9 +34,6 @@ final class Auth0Repository {
             .androidCredentialsManager
     #else
         private let credentialsManager = Auth0Manager.shared.credentialsManager
-        private let context = CoreDataStack.shared.persistentContainer
-            .viewContext
-        private let sharedCoreDataStack = CoreDataStack.shared
     #endif
     private let auth0Service = Auth0Service.shared
 
@@ -90,15 +86,9 @@ final class Auth0Repository {
     func logout() -> Bool {
         #if SKIP
             androidCredentialsManager.clearCredentials()
-            //TODO: clear room database
             return true
         #else
-            let success = credentialsManager.clear()
-            if success {
-                clearLocalDatabase()
-                return success
-            }
-            return false
+            return credentialsManager.clear()
         #endif
     }
 
@@ -175,40 +165,6 @@ final class Auth0Repository {
         #endif
 
     }
-
-    #if !SKIP
-        func clearLocalDatabase() {
-            let entities = sharedCoreDataStack.persistentContainer
-                .managedObjectModel.entities.filter { entity in
-                    entity.name != nil
-                }.map { entity in
-                    entity.name!
-                }
-
-            for entityName in entities {
-                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-                    entityName: entityName
-                )
-                let deleteRequest = NSBatchDeleteRequest(
-                    fetchRequest: fetchRequest
-                )
-
-                do {
-                    try context.execute(deleteRequest)
-                } catch {
-                    print(
-                        "Error deleting all data for entity \(entityName): \(error)"
-                    )
-                }
-            }
-
-            do {
-                try context.save()
-            } catch {
-                print("Error saving context after deleting data: \(error)")
-            }
-        }
-    #endif
 
     private init() {}
 }

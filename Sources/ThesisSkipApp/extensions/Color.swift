@@ -21,19 +21,19 @@ extension Color {
             return .black
         }
 
-        var a: Int32 = 0
-        var r: Int32 = 0
-        var g: Int32 = 0
-        var b: Int32 = 0
+        var a: Int64 = 0
+        var r: Int64 = 0
+        var g: Int64 = 0
+        var b: Int64 = 0
         switch cleanHex.count {
         case 3:  // RGB (12-bit)
             (a, r, g, b) = (
-                255, (intValue >> 8) * 17, (intValue >> 4 & 0xF) * 17,
+                Int64(255), (intValue >> 8) * 17, (intValue >> 4 & 0xF) * 17,
                 (intValue & 0xF) * 17
             )
         case 6:  // RGB (24-bit)
             (a, r, g, b) = (
-                255, intValue >> 16, intValue >> 8 & 0xFF, intValue & 0xFF
+                Int64(255), intValue >> 16, intValue >> 8 & 0xFF, intValue & 0xFF
             )
         case 8:  // ARGB (32-bit)
             (a, r, g, b) = (
@@ -41,7 +41,7 @@ extension Color {
                 intValue & 0xFF
             )
         default:
-            (a, r, g, b) = (1, 1, 1, 0)
+            (a, r, g, b) = (Int64(255), Int64(0), Int64(0), Int64(0))
         }
 
         return Color(
@@ -53,12 +53,12 @@ extension Color {
         )
     }
     
-    private static func parseHex(_ hex: String) -> Int32? {
+    private static func parseHex(_ hex: String) -> Int64? {
             #if SKIP
-            return hex.toIntOrNull(16)
+            return hex.toLongOrNull(16)
 
             #else
-            return Int32(hex, radix: 16)
+            return Int64(hex, radix: 16)
             #endif
         }
 }

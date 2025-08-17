@@ -63,7 +63,7 @@ struct LoginPage: View {
     }
 
     var buutLogo: some View {
-        Image("buut_log_white", bundle: .module)
+        Image("buut_logo_white", bundle: .module)
             .resizable()
             .scaledToFit()
             .frame(width: scaledLogoSize, height: scaledLogoSize)
@@ -83,14 +83,11 @@ struct LoginPage: View {
                     } else {
                         SecureField("Password", text: $loginViewModel.password)
                     }
-                    Image(
-                        systemName: isPasswordVisible
-                            ? "eye.slash.fill" : "eye.fill"
-                    )
-                    .foregroundColor(.gray)
-                    .onTapGesture {
-                        isPasswordVisible = !isPasswordVisible
-                    }
+                    Image(isPasswordVisible
+                          ? "eye.slash.fill" : "eye.fill", bundle: .module).foregroundColor(.gray)
+                        .onTapGesture {
+                            isPasswordVisible = !isPasswordVisible
+                        }
                 }
             }
         }
