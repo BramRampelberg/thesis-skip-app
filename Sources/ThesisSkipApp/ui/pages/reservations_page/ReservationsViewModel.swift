@@ -11,11 +11,11 @@ import SwiftUI
 
 
 class ReservationsViewModel: ObservableObject {
-    private let reservationRepo = OfflineFirstReservationRepository.shared
+    private let reservationRepo = ReservationRepository.shared
     
     @MainActor
     init() {
-        reservationsModel = ReservationsModel(reservations: [], selectedReservationType: ReservationType.upcoming)
+        reservationsModel = ReservationsModel(reservationsState: .loading, selectedReservationType: ReservationType.upcoming)
         getReservations()
     }
     
@@ -36,15 +36,19 @@ class ReservationsViewModel: ObservableObject {
     }
     
     var hasReservationsError: Bool {
-        reservationsModel.reservationsErrorMessage != nil
+        reservationsModel.reservationsState.hasError
     }
     
     var reservationsErrorMessage: String? {
-        reservationsModel.reservationsErrorMessage
+        reservationsModel.reservationsState.errorDescription
     }
     
     var reservations: [Reservation] {
-        reservationsModel.reservations
+        reservationsModel.reservationsState.reservations
+    }
+    
+    var areReservationsLoading: Bool {
+        reservationsModel.reservationsState.isLoading
     }
     
     @MainActor
@@ -145,16 +149,14 @@ class ReservationsViewModel: ObservableObject {
         let type = reservationsModel.selectedReservationType
         let isPast = type == .past
         let isCanceled = type == .canceled
-        
+        reservationsModel.setReservationsState(to: .loading)
         Task {
-            reservationsModel.setReservations(to: await reservationRepo.getOfflineReservations(isPast: isPast, isCanceled: isCanceled))
-            let result = await reservationRepo.loadOnlineReservations(isPast: isPast, isCanceled: isCanceled)
+            let result = await reservationRepo.getReservations(isPast: isPast, isCanceled: isCanceled)
             if result.isSuccess {
-                reservationsModel.setReservationsErrorMessage(to: nil)
+                reservationsModel.setReservationsState(to: .resting(result.data!))
             } else {
-                reservationsModel.setReservationsErrorMessage(to: "Data is not up to date:\n\(result.failureCause!.isEmpty ? "Network error!" : result.failureCause!)")
+                reservationsModel.setReservationsState(to: .error("Data is not up to date:\n\(result.failureCause!.isEmpty ? "Network error!" : result.failureCause!)"))
             }
-            reservationsModel.setReservations(to: await reservationRepo.getOfflineReservations(isPast: isPast, isCanceled: isCanceled))
         }
     }
     

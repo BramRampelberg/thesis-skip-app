@@ -9,18 +9,13 @@
 import Foundation
 
 struct ReservationsModel {
-    private(set) var reservations: [Reservation]
-    private(set) var reservationsErrorMessage: String?
+    private(set) var reservationsState: ReservationsState = .loading
     private(set) var selectedReservation: Reservation?
     private(set) var selectedReservationType: ReservationType
     private(set) var reservationDetailsState: ReservationDetailsState = .unselected
     
-    mutating func setReservations(to reservations: [Reservation]){
-        self.reservations = reservations
-    }
-    
-    mutating func setReservationsErrorMessage(to message: String?){
-        self.reservationsErrorMessage = message
+    mutating func setReservationsState(to reservationsState: ReservationsState){
+        self.reservationsState = reservationsState
     }
     
     mutating func changeReservationDetailsState(to state: ReservationDetailsState){
@@ -33,6 +28,40 @@ struct ReservationsModel {
     
     mutating func changeSelectedReservationType(to type: ReservationType){
         selectedReservationType = type
+    }
+}
+
+enum ReservationsState{
+    case resting([Reservation])
+    case loading
+    case error(String)
+    
+    var reservations: [Reservation] {
+        switch self {
+        case.resting(let reservations): return reservations
+        default: return []
+        }
+    }
+    
+    var isLoading: Bool {
+        switch self {
+        case .loading: return true
+        default: return false
+        }
+    }
+    
+    var hasError: Bool {
+        switch self {
+        case .error: return true
+        default: return false
+        }
+    }
+    
+    var errorDescription: String? {
+        switch self {
+        case .error(let description): return description
+        default: return nil
+        }
     }
 }
 
