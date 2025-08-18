@@ -38,7 +38,6 @@ struct LoginPage: View {
     var body: some View {
         VStack {
             Spacer()
-            buutLogo
             loginForm
             if loginViewModel.loginState.isLoading {
                 ProgressView()
@@ -56,17 +55,8 @@ struct LoginPage: View {
         .background(
             Colors.primary
         )
-        #if !SKIP
             .ignoresSafeArea()
-        #endif
 
-    }
-
-    var buutLogo: some View {
-        Image("buut_logo_white", bundle: .module)
-            .resizable()
-            .scaledToFit()
-            .frame(width: scaledLogoSize, height: scaledLogoSize)
     }
 
     var loginForm: some View {
