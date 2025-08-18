@@ -14,7 +14,7 @@ struct Navigation: View {
     @StateObject private var reservationsViewModel = ReservationsViewModel()
     @StateObject private var profileViewModel = ProfileViewModel()
     @State var selectedPage = Page.reservations
-    @State private var isLoggedIn = false
+    private var isLoggedIn: Bool { loginViewModel.loginState.isLoggedIn }
 
     var body: some View {
         VStack {
@@ -31,12 +31,16 @@ struct Navigation: View {
             }
         }
         .onAppear {
-            isLoggedIn = loginViewModel.loginState.isLoggedIn
+            if isLoggedIn {
+                profileViewModel.getUser()
+                reservationsViewModel.getReservations()
+            }
         }
-        .onChange(of: loginViewModel.loginState.isLoggedIn) { _, newState in
-            withAnimation {
-                self.isLoggedIn = newState
-                selectedPage = .reservations
+        .onChange(of: loginViewModel.loginState.isLoggedIn) { _, isLoggedIn in
+            if isLoggedIn {
+                withAnimation {
+                    selectedPage = .reservations
+                }
             }
         }
     }
@@ -53,15 +57,6 @@ struct Navigation: View {
                 Label("Profile", systemImage: "person.crop.circle.fill")
             }.tag(Page.profile)
         }.transition(.move(edge: .trailing))
-            .onChange(of: selectedPage) { _, newValue in
-                if newValue == .reservations {
-                    //Force refresh of reservations
-                    reservationsViewModel.selectedReservationType =
-                        reservationsViewModel.selectedReservationType
-                } else if newValue == .profile {
-                    profileViewModel.refreshUserData()
-                }
-            }
     }
 
     private var compactLandscapeNavigation: some View {

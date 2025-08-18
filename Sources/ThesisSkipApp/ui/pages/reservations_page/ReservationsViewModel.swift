@@ -16,7 +16,6 @@ class ReservationsViewModel: ObservableObject {
     @MainActor
     init() {
         reservationsModel = ReservationsModel(reservationsState: .loading, selectedReservationType: ReservationType.upcoming)
-        getReservations()
     }
     
     @Published private var reservationsModel: ReservationsModel
@@ -145,7 +144,7 @@ class ReservationsViewModel: ObservableObject {
     }
     
     @MainActor
-    private func getReservations() {
+    func getReservations() {
         let type = reservationsModel.selectedReservationType
         let isPast = type == .past
         let isCanceled = type == .canceled
