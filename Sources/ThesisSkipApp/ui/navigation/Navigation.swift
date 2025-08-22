@@ -25,12 +25,6 @@ struct Navigation: View {
                 portraitNavigation
             }
         }
-        .onAppear {
-            if isLoggedIn {
-                profileViewModel.getUser()
-                reservationsViewModel.getReservations()
-            }
-        }
         .onChange(of: loginViewModel.loginState.isLoggedIn) { _, isLoggedIn in
             if isLoggedIn {
                 withAnimation {
@@ -51,7 +45,12 @@ struct Navigation: View {
             ).tabItem {
                 Label("Profile", systemImage: "person.crop.circle.fill")
             }.tag(Page.profile)
-        }.transition(.move(edge: .trailing))
+        }.transition(.move(edge: .trailing)).onAppear {
+            if isLoggedIn {
+                profileViewModel.getUser()
+                reservationsViewModel.getReservations()
+            }
+        }
     }
 }
 
