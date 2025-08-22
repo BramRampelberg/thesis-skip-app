@@ -13,16 +13,11 @@ import SwiftUI
 #endif
 
 struct LoginPage: View {
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @EnvironmentObject var loginViewModel: LoginViewModel
     @State private var isPasswordVisible: Bool = false
     
     private let baseLogoSize: CGFloat = 100
     private let maxWidth: CGFloat = 600
-
-    var isVerticalCompact: Bool {
-        verticalSizeClass == .compact
-    }
     
     var scaledLogoSize: CGFloat {
             #if SKIP
@@ -74,7 +69,7 @@ struct LoginPage: View {
                         SecureField("Password", text: $loginViewModel.password)
                     }
                     Image(isPasswordVisible
-                          ? "eye.slash.fill" : "eye.fill", bundle: .module).foregroundColor(.gray)
+                          ? "eye.fill" : "eye.slash.fill", bundle: .module).foregroundColor(.gray)
                         .onTapGesture {
                             isPasswordVisible = !isPasswordVisible
                         }
@@ -102,7 +97,7 @@ struct LoginPage: View {
             )
         )
         .foregroundColor(Color.white)
-        .padding(isVerticalCompact ? CGFloat(8) : CGFloat(20))
+        .padding(CGFloat(20))
     }
 }
 

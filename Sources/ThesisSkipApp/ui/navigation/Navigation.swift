@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct Navigation: View {
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @StateObject private var loginViewModel = LoginViewModel()
     @StateObject private var reservationsViewModel = ReservationsViewModel()
     @StateObject private var profileViewModel = ProfileViewModel()
@@ -23,11 +22,7 @@ struct Navigation: View {
                     .move(edge: .leading)
                 )
             } else {
-                if verticalSizeClass == .compact {
-                    compactLandscapeNavigation
-                } else {
-                    portraitNavigation
-                }
+                portraitNavigation
             }
         }
         .onAppear {
@@ -57,57 +52,6 @@ struct Navigation: View {
                 Label("Profile", systemImage: "person.crop.circle.fill")
             }.tag(Page.profile)
         }.transition(.move(edge: .trailing))
-    }
-
-    private var compactLandscapeNavigation: some View {
-        HStack {
-            sidebar
-            MaximizedContainer {
-                switch selectedPage {
-                case .reservations:
-                    ReservationsPage()
-                case .profile:
-                    ProfilePage().environmentObject(loginViewModel)
-                }
-            }
-        }.ignoresSafeArea(edges: .leading)
-    }
-
-    private var sidebar: some View {
-        List {
-            SidebarButton(
-                selectedPage: $selectedPage,
-                page: .reservations,
-                label: "Calendar",
-                systemImage: "calendar"
-            )
-            SidebarButton(
-                selectedPage: $selectedPage,
-                page: .profile,
-                label: "Profile",
-                systemImage: "person.crop.circle.fill"
-            )
-        }
-        .frame(maxWidth: CGFloat(225))
-    }
-
-    struct SidebarButton: View {
-        @Binding var selectedPage: Page
-        let page: Page
-        let label: String
-        let systemImage: String
-
-        var body: some View {
-            Button {
-                selectedPage = page
-            } label: {
-                Label(label, systemImage: systemImage)
-            }
-            .buttonStyle(.plain)
-            .listRowBackground(
-                selectedPage == page ? Color.gray.opacity(0.2) : Color.clear
-            )
-        }
     }
 }
 
