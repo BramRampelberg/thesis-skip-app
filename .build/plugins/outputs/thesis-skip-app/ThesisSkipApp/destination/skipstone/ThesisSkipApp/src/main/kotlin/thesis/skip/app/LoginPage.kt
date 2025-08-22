@@ -24,7 +24,6 @@ import skip.foundation.*
 import skip.model.*
 
 internal class LoginPage: View {
-    private var verticalSizeClass: UserInterfaceSizeClass? = null
     internal var loginViewModel: LoginViewModel
         get() = _loginViewModel.wrappedValue
         set(newValue) {
@@ -40,9 +39,6 @@ internal class LoginPage: View {
 
     private val baseLogoSize: Double = 100.0
     private val maxWidth: Double = 600.0
-
-    internal val isVerticalCompact: Boolean
-        get() = verticalSizeClass == UserInterfaceSizeClass.compact
 
     internal val scaledLogoSize: Double
         get() {
@@ -81,7 +77,6 @@ internal class LoginPage: View {
         val rememberedisPasswordVisible by rememberSaveable(stateSaver = context.stateSaver as Saver<skip.ui.State<Boolean>, Any>) { mutableStateOf(_isPasswordVisible) }
         _isPasswordVisible = rememberedisPasswordVisible
 
-        this.verticalSizeClass = EnvironmentValues.shared.verticalSizeClass
         _loginViewModel.wrappedValue = EnvironmentValues.shared.environmentObject(type = LoginViewModel::class)!!
 
         return super.Evaluate(context, options)
@@ -101,7 +96,7 @@ internal class LoginPage: View {
                                     } else {
                                         SecureField(LocalizedStringKey(stringLiteral = "Password"), text = Binding({ _loginViewModel.wrappedValue.password }, { it -> _loginViewModel.wrappedValue.password = it })).Compose(composectx)
                                     }
-                                    Image(if (isPasswordVisible) "eye.slash.fill" else "eye.fill", bundle = Bundle.module).foregroundColor(Color.gray)
+                                    Image(if (isPasswordVisible) "eye.fill" else "eye.slash.fill", bundle = Bundle.module).foregroundColor(Color.gray)
                                         .onTapGesture { it -> isPasswordVisible = !isPasswordVisible }.Compose(composectx)
                                     ComposeResult.ok
                                 }
@@ -130,7 +125,7 @@ internal class LoginPage: View {
             .padding()
             .background(RoundedRectangle(cornerRadius = Double.infinity).stroke(Color.white, lineWidth = 1.0))
             .foregroundColor(Color.white)
-            .padding(if (isVerticalCompact) Double(8) else Double(20))
+            .padding(Double(20))
         }
 
     private constructor(isPasswordVisible: Boolean = false, privatep: Nothing? = null) {

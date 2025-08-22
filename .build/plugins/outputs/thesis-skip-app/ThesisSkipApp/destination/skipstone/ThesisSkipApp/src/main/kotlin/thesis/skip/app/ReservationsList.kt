@@ -22,7 +22,6 @@ import skip.foundation.*
 import skip.model.*
 
 internal class ReservationsList: View {
-    internal var horizontalSizeClass: UserInterfaceSizeClass? = null
     internal var reservationsViewModel: ReservationsViewModel
         get() = _reservationsViewModel.wrappedValue
         set(newValue) {
@@ -36,35 +35,9 @@ internal class ReservationsList: View {
         }
     private var _selected: skip.ui.State<Int?> = skip.ui.State(null)
 
-    internal val isHorizontalCompact: Boolean
-        get() = horizontalSizeClass == UserInterfaceSizeClass.compact
-
     override fun body(): View {
         return ComposeBuilder { composectx: ComposeContext ->
-            if (isHorizontalCompact) {
-                listView.Compose(composectx)
-            } else {
-                tableView.Compose(composectx)
-            }
-            ComposeResult.ok
-        }
-    }
-
-    @Composable
-    @Suppress("UNCHECKED_CAST")
-    override fun Evaluate(context: ComposeContext, options: Int): kotlin.collections.List<Renderable> {
-        val rememberedselected by rememberSaveable(stateSaver = context.stateSaver as Saver<skip.ui.State<Int?>, Any>) { mutableStateOf(_selected) }
-        _selected = rememberedselected
-
-        this.horizontalSizeClass = EnvironmentValues.shared.horizontalSizeClass
-        _reservationsViewModel.wrappedValue = EnvironmentValues.shared.environmentObject(type = ReservationsViewModel::class)!!
-
-        return super.Evaluate(context, options)
-    }
-
-    private val listView: View
-        get() {
-            return List(reservationsViewModel.reservations) { reservation ->
+            List(reservationsViewModel.reservations) { reservation ->
                 ComposeBuilder { composectx: ComposeContext ->
                     Button(action = { -> reservationsViewModel.selectedReservation = reservation }) { ->
                         ComposeBuilder { composectx: ComposeContext ->
@@ -74,56 +47,20 @@ internal class ReservationsList: View {
                     }.Compose(composectx)
                     ComposeResult.ok
                 }
-            }
+            }.Compose(composectx)
         }
+    }
 
-    private val tableView: View
-        get() {
-            return Table(reservationsViewModel.reservations, selection = Binding({ _selected.wrappedValue }, { it -> _selected.wrappedValue = it })) { it ->
-                ComposeBuilder { composectx: ComposeContext ->
-                    TableColumn(it, LocalizedStringKey(stringLiteral = "Date"), content = { reservation: Reservation ->
-                        ComposeBuilder { composectx: ComposeContext ->
-                            Text({
-                                val str = LocalizedStringKey.StringInterpolation(literalCapacity = 0, interpolationCount = 0)
-                                str.appendLiteral("Date: ")
-                                str.appendInterpolation(reservation.date.formatted(date = Date.FormatStyle.DateStyle.numeric, time = Date.FormatStyle.TimeStyle.omitted))
-                                LocalizedStringKey(stringInterpolation = str)
-                            }()).Compose(composectx)
-                            ComposeResult.ok
-                        }
-                    }).Compose(composectx)
+    @Composable
+    @Suppress("UNCHECKED_CAST")
+    override fun Evaluate(context: ComposeContext, options: Int): kotlin.collections.List<Renderable> {
+        val rememberedselected by rememberSaveable(stateSaver = context.stateSaver as Saver<skip.ui.State<Int?>, Any>) { mutableStateOf(_selected) }
+        _selected = rememberedselected
 
-                    TableColumn(it, LocalizedStringKey(stringLiteral = "Time"), content = { reservation: Reservation ->
-                        ComposeBuilder { composectx: ComposeContext ->
-                            Text({
-                                val str = LocalizedStringKey.StringInterpolation(literalCapacity = 0, interpolationCount = 0)
-                                str.appendInterpolation(reservation.start.formatted(date = Date.FormatStyle.DateStyle.omitted, time = Date.FormatStyle.TimeStyle.shortened))
-                                str.appendLiteral(" - ")
-                                str.appendInterpolation(reservation.end.formatted(date = Date.FormatStyle.DateStyle.omitted, time = Date.FormatStyle.TimeStyle.shortened))
-                                LocalizedStringKey(stringInterpolation = str)
-                            }()).Compose(composectx)
-                            ComposeResult.ok
-                        }
-                    }).Compose(composectx)
+        _reservationsViewModel.wrappedValue = EnvironmentValues.shared.environmentObject(type = ReservationsViewModel::class)!!
 
-                    TableColumn(it, LocalizedStringKey(stringLiteral = "Boat"), content = { reservation: Reservation ->
-                        ComposeBuilder { composectx: ComposeContext ->
-                            Text({
-                                val str = LocalizedStringKey.StringInterpolation(literalCapacity = 0, interpolationCount = 0)
-                                str.appendLiteral("Boat: ")
-                                str.appendInterpolation(reservation.boatPersonalName)
-                                LocalizedStringKey(stringInterpolation = str)
-                            }()).Compose(composectx)
-                            ComposeResult.ok
-                        }
-                    }).Compose(composectx)
-                    ComposeResult.ok
-                }
-            }.onChange(of = selected) { oldId, newId ->
-                val reservation = reservationsViewModel.reservations.first { reservation -> reservation.identifier == newId }
-                reservationsViewModel.selectedReservation = reservation
-            }
-        }
+        return super.Evaluate(context, options)
+    }
 
     private constructor(selected: Int? = null, privatep: Nothing? = null) {
         this._selected = skip.ui.State(selected)

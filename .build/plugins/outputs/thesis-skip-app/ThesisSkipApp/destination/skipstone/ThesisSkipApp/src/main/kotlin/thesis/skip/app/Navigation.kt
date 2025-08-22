@@ -22,7 +22,6 @@ import skip.foundation.*
 import skip.model.*
 
 internal class Navigation: View {
-    private var verticalSizeClass: UserInterfaceSizeClass? = null
     private var loginViewModel: LoginViewModel
         get() = _loginViewModel.wrappedValue
         set(newValue) {
@@ -56,8 +55,6 @@ internal class Navigation: View {
                 ComposeBuilder { composectx: ComposeContext ->
                     if (!isLoggedIn) {
                         LoginPage().environmentObject(loginViewModel).transition(AnyTransition.move(edge = Edge.leading)).Compose(composectx)
-                    } else if (verticalSizeClass == UserInterfaceSizeClass.compact) {
-                        compactLandscapeNavigation.Compose(composectx)
                     } else {
                         portraitNavigation.Compose(composectx)
                     }
@@ -93,8 +90,6 @@ internal class Navigation: View {
         val rememberedselectedPage by rememberSaveable(stateSaver = context.stateSaver as Saver<skip.ui.State<Page>, Any>) { mutableStateOf(_selectedPage) }
         _selectedPage = rememberedselectedPage
 
-        this.verticalSizeClass = EnvironmentValues.shared.verticalSizeClass
-
         return super.Evaluate(context, options)
     }
 
@@ -119,69 +114,6 @@ internal class Navigation: View {
                 }
             }.transition(AnyTransition.move(edge = Edge.trailing))
         }
-
-    private val compactLandscapeNavigation: View
-        get() {
-            return HStack { ->
-                ComposeBuilder { composectx: ComposeContext ->
-                    sidebar.Compose(composectx)
-                    MaximizedContainer { ->
-                        ComposeBuilder { composectx: ComposeContext ->
-                            when (selectedPage) {
-                                Page.reservations -> ReservationsPage().Compose(composectx)
-                                Page.profile -> ProfilePage().environmentObject(loginViewModel).Compose(composectx)
-                            }
-                            ComposeResult.ok
-                        }
-                    }.Compose(composectx)
-                    ComposeResult.ok
-                }
-            }.ignoresSafeArea(edges = Edge.Set.leading)
-        }
-
-    private val sidebar: View
-        get() {
-            return List { ->
-                ComposeBuilder { composectx: ComposeContext ->
-                    SidebarButton(selectedPage = Binding({ _selectedPage.wrappedValue }, { it -> _selectedPage.wrappedValue = it }), page = Page.reservations, label = "Calendar", systemImage = "calendar").Compose(composectx)
-                    SidebarButton(selectedPage = Binding({ _selectedPage.wrappedValue }, { it -> _selectedPage.wrappedValue = it }), page = Page.profile, label = "Profile", systemImage = "person.crop.circle.fill").Compose(composectx)
-                    ComposeResult.ok
-                }
-            }
-            .frame(maxWidth = Double(225))
-        }
-
-    internal class SidebarButton: View {
-        internal var selectedPage: Page
-            get() = _selectedPage.wrappedValue
-            set(newValue) {
-                _selectedPage.wrappedValue = newValue
-            }
-        internal var _selectedPage: Binding<Page>
-        internal val page: Page
-        internal val label: String
-        internal val systemImage: String
-
-        override fun body(): View {
-            return ComposeBuilder { composectx: ComposeContext ->
-                Button(action = { -> selectedPage = page }, label = { ->
-                    ComposeBuilder { composectx: ComposeContext ->
-                        Label(label, systemImage = systemImage).Compose(composectx)
-                        ComposeResult.ok
-                    }
-                })
-                .buttonStyle(ButtonStyle.plain)
-                .listRowBackground(if (selectedPage == page) Color.gray.opacity(0.2) else Color.clear).Compose(composectx)
-            }
-        }
-
-        constructor(selectedPage: Binding<Page>, page: Page, label: String, systemImage: String) {
-            this._selectedPage = selectedPage
-            this.page = page
-            this.label = label
-            this.systemImage = systemImage
-        }
-    }
 
     private constructor(loginViewModel: LoginViewModel = LoginViewModel(), reservationsViewModel: ReservationsViewModel = ReservationsViewModel(), profileViewModel: ProfileViewModel = ProfileViewModel(), selectedPage: Page = Page.reservations, privatep: Nothing? = null) {
         this._loginViewModel = skip.ui.State(loginViewModel)
